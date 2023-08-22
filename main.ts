@@ -98,34 +98,95 @@ class PluginToggleSettingsTab extends PluginSettingTab {
 		// 		});
 		// });
 
-		Object.values(this.app.plugins.plugins).forEach((plugin : Object) => {
-			// console.log(plugin)
-			new Setting(containerEl)
-				.setName(plugin.manifest.name)
-				.addToggle((toggle) => {
-					const isEnabled = Array.from(this.app.plugins.enabledPlugins).includes(plugin.manifest.id);
-					console.log(Array.from(this.app.plugins.enabledPlugins))
-					console.log(plugin.manifest.id)
-					console.log(isEnabled)
-					toggle.setValue(isEnabled).onChange(async (value) => {
-						if (value) {
-							try {
-								this.app.plugins.disablePlugin(plugin.manifest.id)
-								// @ts-ignore
-								this.settings.affectedPlugins.push(plugin.manifest.id)
-							} catch (error) {
-								new Notice(`Error: ${error}`)
-							}
-						} else {
-							// await this.app.plugins.disable(plugin.id);
-							plugin.enabled = false;
-							plugin._loaded = false;
-						}
-						console.log(plugin)
-						this.app.internalPlugins.saveSettings();
-					});
-				});
-		});
+      for (const pluginsType of [this.app.internalPlugins.plugins, this.app.plugins.manifests]) {
+        containerEl.createEl("h2", { text: "Sep Plugins" });
+        const pluginList: string[] = [];
+        for (const pluginId in pluginsType) {
+          pluginList.push(pluginId);
+		  const pluginObject = pluginsType[pluginId];
+		  //const pluginObject = pluginsType == this.app.plugins.manifests
+          // 			? this.app.plugins.plugins[pluginId]
+          // 			: pluginsType[pluginId];
+          //           console.log(pluginObject)
+          console.log(pluginObject)
+
+          // new Setting(containerEl)
+          //   .setName(plugin.manifest.name)
+          //   .addToggle((toggle) => {
+          //     const isEnabled = Array.from(this.app.plugins.enabledPlugins).includes(plugin.manifest.id);
+          //     console.log(Array.from(this.app.plugins.enabledPlugins))
+          //     console.log(plugin.manifest.id)
+          //     console.log(isEnabled)
+          //     toggle.setValue(isEnabled).onChange(async (value) => {
+          //       if (value) {
+          //         try {
+          //           this.app.plugins.disablePlugin(plugin.manifest.id)
+          //           // @ts-ignore
+          //           this.settings.affectedPlugins.push(plugin.manifest.id)
+          //         } catch (error) {
+          //           new Notice(`Error: ${error}`)
+          //         }
+          //       } else {
+          //         // await this.app.plugins.disable(plugin.id);
+          //         plugin.enabled = false;
+          //         plugin._loaded = false;
+          //       }
+          //       console.log(plugin)
+          //       this.app.internalPlugins.saveSettings();
+          //     });
+          //   });
+        }
+        console.log(pluginList)
+
+
+      }
+
+		// Object.values(this.app.plugins.plugins).forEach((plugin : Object) => {
+		// 	// console.log(plugin)
+		// 	new Setting(containerEl)
+		// 		.setName(plugin.manifest.name)
+		// 		.addToggle((toggle) => {
+		// 			const isEnabled = Array.from(this.app.plugins.enabledPlugins).includes(plugin.manifest.id);
+		// 			console.log(Array.from(this.app.plugins.enabledPlugins))
+		// 			console.log(plugin.manifest.id)
+		// 			console.log(isEnabled)
+		// 			toggle.setValue(isEnabled).onChange(async (value) => {
+		// 				if (value) {
+		// 					try {
+		// 						this.app.plugins.disablePlugin(plugin.manifest.id)
+		// 						// @ts-ignore
+		// 						this.settings.affectedPlugins.push(plugin.manifest.id)
+		// 					} catch (error) {
+		// 						new Notice(`Error: ${error}`)
+		// 					}
+		// 				} else {
+		// 					// await this.app.plugins.disable(plugin.id);
+		// 					plugin.enabled = false;
+		// 					plugin._loaded = false;
+		// 				}
+		// 				console.log(plugin)
+		// 				this.app.internalPlugins.saveSettings();
+		// 			});
+		// 		});
+		// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		// console.log(Object.values(this.app.plugins.plugins))
 		// Object.values(this.app.plugins.plugins).forEach((plugin : Object) => {
