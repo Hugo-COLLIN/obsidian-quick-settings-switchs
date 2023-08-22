@@ -1,6 +1,8 @@
 import {App, Notice, Plugin, PluginSettingTab, Setting} from "obsidian";
+import * as fs from "fs";
+import * as path from "path";
 
-export default class ExamplePlugin extends Plugin {
+export default class MainPlugin extends Plugin {
 	statusBarElement: HTMLSpanElement;
 
 	onload() {
@@ -32,178 +34,34 @@ export default class ExamplePlugin extends Plugin {
 		// }
 		//
 		// console.log(internalPlugins);
-		//
-		// // installed
-		// const installedPlugins: string[] = [];
-		//
-		// for (const pluginId in this.app.plugins.manifests) {
-		// 	console.log(pluginId)
-		//     installedPlugins.push(pluginId);
-		// 	// const pluginManifest = this.app.plugins.manifests[pluginId];
-		// 	// installedPlugins.push(pluginManifest.name);
-		// }
-		//
-		// console.log(installedPlugins);
 	}
+
+  async savePluginState(app: App, pluginId: string, enabled: boolean) {
+    // Get the vault path
+    const vaultPath = app.vault.adapter.getBasePath();
+    const configDirName = app.vault.configDir;
+
+    // Read the config file
+    const configPath = path.join(vaultPath, configDirName, 'community-plugins.json');
+    const configFile = await fs.promises.readFile(configPath, 'utf-8');
+    const config = JSON.parse(configFile);
+
+    // Update the list of enabled plugins
+    if (enabled) {
+      if (!config.includes(pluginId)) {
+        config.push(pluginId);
+      }
+    } else {
+      if (config.includes(pluginId))
+      {
+        config.splice(config.indexOf(pluginId), 1);
+      }
+    }
+
+    // Save the modified config file
+    await fs.promises.writeFile(configPath, JSON.stringify(config, null, 2));
+  }
 }
-
-// interface PluginSetting {
-// 	isFirstRun: boolean
-// 	affectedPlugins: string[]
-// }
-//
-// const DEFAULT_SETTINGS: PluginSetting = {
-// 	isFirstRun: true,
-// 	affectedPlugins: []
-// }
-
-// class PluginToggleSettingsTab extends PluginSettingTab {
-// 	plugin: Plugin;
-// 	settings: {
-// 		isFirstRun: true,
-// 		affectedPlugins: []
-// 	};
-//
-// 	constructor(app: App, plugin: Plugin) {
-// 		super(app, plugin);
-// 		this.plugin = plugin;
-// 	}
-//
-// 	display(): void {
-// 		let { containerEl } = this;
-//
-// 		containerEl.empty();
-//
-// 		containerEl.createEl("h2", { text: "Plugin Toggle Settings" });
-//
-//
-// 		// Object.values(this.app.internalPlugins.plugins).forEach((plugin : Object) => {
-// 		// 	// console.log(plugin)
-// 		// 	new Setting(containerEl)
-// 		// 		.setName(plugin.instance.name)
-// 		// 		.addToggle((toggle) => {
-// 		// 			toggle.setValue(plugin.enabled).onChange(async (value) => {
-// 		// 				if (value) {
-// 		// 					// await this.app.plugins.enable(plugin.id);
-// 		// 					plugin.enabled = true;
-// 		// 					plugin._loaded = true;
-// 		// 				} else {
-// 		// 					// await this.app.plugins.disable(plugin.id);
-// 		// 					plugin.enabled = false;
-// 		// 					plugin._loaded = false;
-// 		// 				}
-// 		// 				console.log(plugin)
-// 		// 				this.app.internalPlugins.saveSettings();
-// 		// 			});
-// 		// 		});
-// 		// });
-//
-//       for (const pluginsType of [this.app.internalPlugins.plugins, this.app.plugins.manifests]) {
-//         containerEl.createEl("h2", { text: "Sep Plugins" });
-//         const pluginList: string[] = [];
-//         for (const pluginId in pluginsType) {
-//           pluginList.push(pluginId);
-// 		  const pluginObject = pluginsType[pluginId];
-// 		  //const pluginObject = pluginsType == this.app.plugins.manifests
-//           // 			? this.app.plugins.plugins[pluginId]
-//           // 			: pluginsType[pluginId];
-//           //           console.log(pluginObject)
-//           console.log(pluginObject)
-//
-//           // new Setting(containerEl)
-//           //   .setName(plugin.manifest.name)
-//           //   .addToggle((toggle) => {
-//           //     const isEnabled = Array.from(this.app.plugins.enabledPlugins).includes(plugin.manifest.id);
-//           //     console.log(Array.from(this.app.plugins.enabledPlugins))
-//           //     console.log(plugin.manifest.id)
-//           //     console.log(isEnabled)
-//           //     toggle.setValue(isEnabled).onChange(async (value) => {
-//           //       if (value) {
-//           //         try {
-//           //           this.app.plugins.disablePlugin(plugin.manifest.id)
-//           //           // @ts-ignore
-//           //           this.settings.affectedPlugins.push(plugin.manifest.id)
-//           //         } catch (error) {
-//           //           new Notice(`Error: ${error}`)
-//           //         }
-//           //       } else {
-//           //         // await this.app.plugins.disable(plugin.id);
-//           //         plugin.enabled = false;
-//           //         plugin._loaded = false;
-//           //       }
-//           //       console.log(plugin)
-//           //       this.app.internalPlugins.saveSettings();
-//           //     });
-//           //   });
-//         }
-//         console.log(pluginList)
-//
-//
-//       }
-//
-// 		// Object.values(this.app.plugins.plugins).forEach((plugin : Object) => {
-// 		// 	// console.log(plugin)
-// 		// 	new Setting(containerEl)
-// 		// 		.setName(plugin.manifest.name)
-// 		// 		.addToggle((toggle) => {
-// 		// 			const isEnabled = Array.from(this.app.plugins.enabledPlugins).includes(plugin.manifest.id);
-// 		// 			console.log(Array.from(this.app.plugins.enabledPlugins))
-// 		// 			console.log(plugin.manifest.id)
-// 		// 			console.log(isEnabled)
-// 		// 			toggle.setValue(isEnabled).onChange(async (value) => {
-// 		// 				if (value) {
-// 		// 					try {
-// 		// 						this.app.plugins.disablePlugin(plugin.manifest.id)
-// 		// 						// @ts-ignore
-// 		// 						this.settings.affectedPlugins.push(plugin.manifest.id)
-// 		// 					} catch (error) {
-// 		// 						new Notice(`Error: ${error}`)
-// 		// 					}
-// 		// 				} else {
-// 		// 					// await this.app.plugins.disable(plugin.id);
-// 		// 					plugin.enabled = false;
-// 		// 					plugin._loaded = false;
-// 		// 				}
-// 		// 				console.log(plugin)
-// 		// 				this.app.internalPlugins.saveSettings();
-// 		// 			});
-// 		// 		});
-// 		// });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-// 		// console.log(Object.values(this.app.plugins.plugins))
-// 		// Object.values(this.app.plugins.plugins).forEach((plugin : Object) => {
-// 		// 	new Setting(containerEl)
-// 		// 		.setName(plugin.instance.name)
-// 		// 		.addToggle((toggle) => {
-// 		// 			toggle.setValue(plugin.enabled).onChange(async (value) => {
-// 		// 				if (value) {
-// 		// 					await this.app.plugins.enable(plugin.id);
-// 		// 				} else {
-// 		// 					await this.app.plugins.disable(plugin.id);
-// 		// 				}
-// 		// 			});
-// 		// 		});
-// 		// });
-// 	}
-// }
 
 class PluginToggleSettingsTab extends PluginSettingTab {
   plugin: Plugin;
@@ -242,14 +100,17 @@ class PluginToggleSettingsTab extends PluginSettingTab {
 				// console.log(isEnabled)
 				toggle.setValue(isEnabled).onChange(async (value) => {
 					if (value) {
-                      this.app.plugins.enablePlugin(pluginId);
-                      this.app.plugins.enabledPlugins.add(pluginId);
+            this.app.plugins.enablePlugin(pluginId);
+            this.app.plugins.enabledPlugins.add(pluginId);
 					} else {
-                      this.app.plugins.disablePlugin(pluginId);
+            this.app.plugins.disablePlugin(pluginId);
 					  this.app.plugins.enabledPlugins.delete(pluginId);
 					}
 					// console.log(plugin)
 					// this.app.internalPlugins.saveSettings();
+          // await this.plugin.saveSettings(Array.from(this.app.plugins.enabledPlugins));
+          // await this.app.internalPlugins.saveSettings();
+          await this.plugin.savePluginState(this.app, pluginId, value);
 				});
 			});
       }
