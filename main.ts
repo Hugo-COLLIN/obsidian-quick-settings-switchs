@@ -14,7 +14,7 @@ export default class MainPlugin extends Plugin {
         this.registerDomEvent(
           document.querySelector('.app-container .side-dock-settings > :nth-of-type(3)'),
           'click',
-          this.addToggleButtonsToLeftSidebar.bind(this)
+          this.updateLeftSidebar.bind(this)
         );
       })
     );
@@ -47,15 +47,15 @@ export default class MainPlugin extends Plugin {
 		// console.log(internalPlugins);
 	}
 
-  addToggleButtonsToLeftSidebar() {
-    console.log("YO")
+  updateLeftSidebar() {
+    // console.log("YO")
     const settingsSidebar = document.querySelector('.vertical-tab-header');
     if (!settingsSidebar) return;
 
-    console.log("HEY")
+    // console.log("HEY")
     for (const pluginId in this.app.plugins.manifests) {
       const pluginObject = this.app.plugins.manifests[pluginId];
-      console.log(pluginObject)
+      // console.log(pluginObject)
 
       if (this.manifest.id == pluginId) continue;
 
@@ -73,7 +73,10 @@ export default class MainPlugin extends Plugin {
         }
       });
 
+      console.log(found)
+      console.log(pluginId)
       if (!found /*&& this.isEnabled(pluginObject)*/) {
+        console.log("entered")
         this.createSideListElt(settingsSidebar, pluginObject, pluginId);
       }
     }
@@ -113,11 +116,11 @@ export default class MainPlugin extends Plugin {
       this.app.plugins.enablePlugin(pluginId);
       this.app.plugins.enabledPlugins.add(pluginId);
       await new Promise((resolve) => setTimeout(resolve, 100)); //TODO: retry while not added
-      this.addToggleButtonsToLeftSidebar();
     } else {
       this.app.plugins.disablePlugin(pluginId);
       this.app.plugins.enabledPlugins.delete(pluginId);
     }
+    this.updateLeftSidebar();
     await this.savePluginState(this.app, pluginId, value);
   }
 
