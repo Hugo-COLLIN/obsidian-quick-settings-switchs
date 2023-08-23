@@ -1,15 +1,17 @@
 # Obsidian Quick Plugins Settings
 
-Toggle your plugins from the settings menu.
+##### 🔁 Toggle your plugins from the settings side menu.
 
+This Obsidian plugins enables you to quickly enable/disable your plugins from the settings menu.
 
-This project is under MIT license. If you want to contribute, you can help by reporting bugs, suggesting features, or by sending pull requests.
-If you want to help, the roadmap contains some ideas to improve the plugin.
+## How to contribute
+This project is under MIT license. If you want to help, the roadmap contains some ideas to improve the plugin. 
+You can contribute by reporting bugs, suggesting features, or by sending pull requests.
 
 For more information, please read the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 
-### ROADMAP
+## ROADMAP
 Bugs:
 - [ ] Bug "Community plugins" header disappear when no parameters for active plugins
 
