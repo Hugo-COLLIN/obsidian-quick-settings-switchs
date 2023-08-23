@@ -84,25 +84,6 @@ export default class MainPlugin extends Plugin {
         }
         return;
       });
-      // if (!tabHeader) continue;
-      //
-      // const isEnabled = Array.from(this.app.plugins.enabledPlugins).includes(pluginObject.id);
-      //
-      // const switchButton = tabHeader.createEl('input', {
-      //   type: 'checkbox',
-      //   cls: 'plugin-switch',
-      //   checked: isEnabled,
-      // });
-      //
-      // switchButton.addEventListener('change', () => {
-      //   if (switchButton.checked) {
-      //     this.app.plugins.enablePlugin(pluginId);
-      //     this.app.plugins.enabledPlugins.add(pluginId);
-      //   } else {
-      //     this.app.plugins.disablePlugin(pluginId);
-      //     this.app.plugins.enabledPlugins.delete(pluginId);
-      //   }
-      // });
     }
   }
 
