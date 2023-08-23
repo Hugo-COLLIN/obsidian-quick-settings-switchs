@@ -1,6 +1,6 @@
 # Obsidian Quick Plugins Settings
 
-##### 🔁 Toggle your plugins from the settings side menu.
+### 🔁 Toggle your plugins from the settings side menu.
 
 This Obsidian plugins enables you to quickly enable/disable your plugins from the settings menu.
 
