@@ -3,6 +3,12 @@
 Toggle your plugins from the settings menu.
 
 
+This project is under MIT license. If you want to contribute, you can help by reporting bugs, suggesting features, or by sending pull requests.
+If you want to help, the roadmap contains some ideas to improve the plugin.
+
+For more information, please read the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+
+
 ### ROADMAP
 Bugs:
 - [ ] Bug "Community plugins" header disappear when no parameters for active plugins
