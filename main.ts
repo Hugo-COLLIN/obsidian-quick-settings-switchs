@@ -6,23 +6,34 @@ export default class MainPlugin extends Plugin {
 	statusBarElement: HTMLSpanElement;
 
 	onload() {
-		console.log("Hey!");
 		this.addSettingTab(new PluginToggleSettingsTab(this.app, this));
 
-		console.log(this.app.internalPlugins.plugins)
-		console.log(this.app.plugins.plugins)
-		console.log(this.app.internalPlugins)
-		console.log(this.app.plugins)
-		// console.log(this.app.plugins.enabledPlugins)
+    this.registerEvent(
+      this.app.workspace.on('layout-change', () => {
+        // this.addToggleButtonsToLeftSidebar();
+        this.registerDomEvent(
+          document.querySelector('.app-container .side-dock-settings > :nth-of-type(3)'),
+          'click',
+          this.addToggleButtonsToLeftSidebar.bind(this)
+        );
+      })
+    );
 
-	    for (const pluginsType of [this.app.internalPlugins.plugins, this.app.plugins.manifests]) {
-          const pluginList: string[] = [];
-          for (const pluginId in pluginsType) {
-				// console.log(pluginId)
-              pluginList.push(pluginId);
-            }
-          console.log(pluginList)
-        }
+
+    // console.log(this.app.internalPlugins.plugins)
+		// console.log(this.app.plugins.plugins)
+		// console.log(this.app.internalPlugins)
+		// console.log(this.app.plugins)
+		// // console.log(this.app.plugins.enabledPlugins)
+    //
+	  //   for (const pluginsType of [this.app.internalPlugins.plugins, this.app.plugins.manifests]) {
+    //       const pluginList: string[] = [];
+    //       for (const pluginId in pluginsType) {
+		// 		// console.log(pluginId)
+    //           pluginList.push(pluginId);
+    //         }
+    //       console.log(pluginList)
+    //     }
 		//
 		// // internal
 		// const internalPlugins: string[] = [];
@@ -35,6 +46,82 @@ export default class MainPlugin extends Plugin {
 		//
 		// console.log(internalPlugins);
 	}
+
+  addToggleButtonsToLeftSidebar() {
+    console.log("YO")
+    const settingsSidebar = document.querySelector('.vertical-tab-header');
+    if (!settingsSidebar) return;
+
+    console.log("HEY")
+    for (const pluginId in this.app.plugins.manifests) {
+      const pluginObject = this.app.plugins.manifests[pluginId];
+      console.log(pluginObject)
+
+      if (this.manifest.id == pluginId) continue;
+
+      const listPlugins = settingsSidebar.querySelectorAll(`.vertical-tab-nav-item`);
+      // console.log(listPlugins)
+      listPlugins.forEach((plugin) => {
+        const toggle = plugin.querySelector(`.plugin-switch`);
+        if (plugin.textContent == pluginObject.name && toggle == null) {
+          console.log(plugin)
+          const isEnabled = Array.from(this.app.plugins.enabledPlugins).includes(pluginObject.id);
+
+          console.log(Array.from(this.app.plugins.enabledPlugins))
+          console.log(pluginObject.id)
+          console.log(isEnabled)
+
+          const switchButton = plugin.createEl('input', {
+            type: 'checkbox',
+            cls: 'plugin-switch' + (isEnabled ? ' is-enabled' : ''),
+          });
+
+          switchButton.checked = isEnabled;
+
+          console.log(switchButton)
+
+          switchButton.addEventListener('change', async () => {
+            await this.pluginStateChange(switchButton.checked, pluginId);
+          });
+        }
+        return;
+      });
+      // if (!tabHeader) continue;
+      //
+      // const isEnabled = Array.from(this.app.plugins.enabledPlugins).includes(pluginObject.id);
+      //
+      // const switchButton = tabHeader.createEl('input', {
+      //   type: 'checkbox',
+      //   cls: 'plugin-switch',
+      //   checked: isEnabled,
+      // });
+      //
+      // switchButton.addEventListener('change', () => {
+      //   if (switchButton.checked) {
+      //     this.app.plugins.enablePlugin(pluginId);
+      //     this.app.plugins.enabledPlugins.add(pluginId);
+      //   } else {
+      //     this.app.plugins.disablePlugin(pluginId);
+      //     this.app.plugins.enabledPlugins.delete(pluginId);
+      //   }
+      // });
+    }
+  }
+
+  private async pluginStateChange(value: boolean, pluginId: string) {
+    if (value) {
+      this.app.plugins.enablePlugin(pluginId);
+      this.app.plugins.enabledPlugins.add(pluginId);
+      await new Promise((resolve) => setTimeout(resolve, 100)); //TODO: retry while not added
+      this.addToggleButtonsToLeftSidebar();
+    } else {
+      this.app.plugins.disablePlugin(pluginId);
+      this.app.plugins.enabledPlugins.delete(pluginId);
+    }
+    await this.savePluginState(this.app, pluginId, value);
+  }
+
+
 
   async savePluginState(app: App, pluginId: string, enabled: boolean) {
     // Get the vault path
@@ -95,23 +182,9 @@ class PluginToggleSettingsTab extends PluginSettingTab {
 			.setName(pluginObject.name)
 			.addToggle((toggle) => {
 				const isEnabled = Array.from(this.app.plugins.enabledPlugins).includes(pluginObject.id);
-				// console.log(Array.from(this.app.plugins.enabledPlugins))
-				// console.log(plugin.manifest.id)
-				// console.log(isEnabled)
 				toggle.setValue(isEnabled).onChange(async (value) => {
-					if (value) {
-            this.app.plugins.enablePlugin(pluginId);
-            this.app.plugins.enabledPlugins.add(pluginId);
-					} else {
-            this.app.plugins.disablePlugin(pluginId);
-					  this.app.plugins.enabledPlugins.delete(pluginId);
-					}
-					// console.log(plugin)
-					// this.app.internalPlugins.saveSettings();
-          // await this.plugin.saveSettings(Array.from(this.app.plugins.enabledPlugins));
-          // await this.app.internalPlugins.saveSettings();
-          await this.plugin.savePluginState(this.app, pluginId, value);
-				});
+          await this.plugin.pluginStateChange(value, pluginId);
+        });
 			});
       }
       console.log(pluginList);
