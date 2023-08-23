@@ -55,6 +55,8 @@ export default class MainPlugin extends Plugin {
     const settingsSidebar = document.querySelector('.vertical-tab-header');
     if (!settingsSidebar) return;
 
+    settingsSidebar.querySelectorAll('.qps-created-element').forEach((elt) => elt.remove());
+
     // console.log("HEY")
     for (const pluginId in this.app.plugins.manifests) {
       const pluginObject = this.app.plugins.manifests[pluginId];
@@ -75,11 +77,9 @@ export default class MainPlugin extends Plugin {
           return;
         }
       });
-
-      console.log(found)
-      console.log(pluginId)
+      // console.log(pluginId)
       if (!found /*&& this.isEnabled(pluginObject)*/) {
-        console.log("entered")
+        // console.log("entered")
         this.createSideListElt(settingsSidebar, pluginObject, pluginId);
       }
     }
@@ -88,7 +88,7 @@ export default class MainPlugin extends Plugin {
   private createSideListElt(settingsSidebar: Element, pluginObject: any, pluginId: string) {
     const sidelistInstalled = settingsSidebar.querySelectorAll('.vertical-tab-header-group-items')[2]
     const pluginElt = sidelistInstalled.createEl('div', {
-      cls: 'vertical-tab-nav-item',
+      cls: 'vertical-tab-nav-item qps-created-element',
       text: pluginObject.name,
     });
     this.createToggleBtn(pluginElt, pluginObject, pluginId);
@@ -98,6 +98,8 @@ export default class MainPlugin extends Plugin {
     plugin.style.display = 'flex';
     plugin.style.justifyContent = 'space-between';
     const isEnabled = this.isEnabled(pluginObject);
+    console.log(pluginId)
+    console.log(isEnabled)
 
     const containerBtn = plugin.createEl('div', {
       // cls: 'checkbox-container',
@@ -113,7 +115,9 @@ export default class MainPlugin extends Plugin {
     switchButton.tabIndex = 0;
 
     containerBtn.addEventListener('click', async () => {
+      console.log(switchButton.checked)
       switchButton.checked = !switchButton.checked; // needed, otherwise the action is not performed
+      console.log(switchButton.checked)
       await this.pluginStateChange(switchButton.checked, pluginId);
     });
   }
