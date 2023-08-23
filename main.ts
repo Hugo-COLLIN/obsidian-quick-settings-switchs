@@ -1,12 +1,13 @@
-import {App, Plugin, PluginSettingTab, Setting} from "obsidian";
+import {App, Plugin} from "obsidian";
 import * as fs from "fs";
 import * as path from "path";
+// import {PluginToggleSettingsTab} from "./settingsTab";
 
 export default class MainPlugin extends Plugin {
 	statusBarElement: HTMLSpanElement;
 
 	onload() {
-		this.addSettingTab(new PluginToggleSettingsTab(this.app, this));
+		// this.addSettingTab(new PluginToggleSettingsTab(this.app, this));
 
     this.registerEvent(
       this.app.workspace.on('layout-change', () => {
@@ -23,21 +24,6 @@ export default class MainPlugin extends Plugin {
     styleElem.innerHTML = ".plugin-switch { pointer-events: none; } .plugin-switch::before { pointer-events: all; }";
 
 
-    // console.log(this.app.internalPlugins.plugins)
-		// console.log(this.app.plugins.plugins)
-		// console.log(this.app.internalPlugins)
-		// console.log(this.app.plugins)
-		// // console.log(this.app.plugins.enabledPlugins)
-    //
-	  //   for (const pluginsType of [this.app.internalPlugins.plugins, this.app.plugins.manifests]) {
-    //       const pluginList: string[] = [];
-    //       for (const pluginId in pluginsType) {
-		// 		// console.log(pluginId)
-    //           pluginList.push(pluginId);
-    //         }
-    //       console.log(pluginList)
-    //     }
-		//
 		// // internal
 		// const internalPlugins: string[] = [];
 		//
@@ -51,21 +37,17 @@ export default class MainPlugin extends Plugin {
 	}
 
   updateLeftSidebar() {
-    // console.log("YO")
     const settingsSidebar = document.querySelector('.vertical-tab-header');
     if (!settingsSidebar) return;
 
     settingsSidebar.querySelectorAll('.qps-created-element').forEach((elt) => elt.remove());
 
-    // console.log("HEY")
     for (const pluginId in this.app.plugins.manifests) {
       const pluginObject = this.app.plugins.manifests[pluginId];
-      // console.log(pluginObject)
 
-      if (this.manifest.id == pluginId) continue;
+      // if (this.manifest.id == pluginId) continue;
 
       const listPlugins = settingsSidebar.querySelectorAll(`.vertical-tab-nav-item`);
-      // console.log(listPlugins)
 
       let found = false;
       listPlugins.forEach((plugin) => {
@@ -77,9 +59,7 @@ export default class MainPlugin extends Plugin {
           return;
         }
       });
-      // console.log(pluginId)
       if (!found /*&& this.isEnabled(pluginObject)*/) {
-        // console.log("entered")
         this.createSideListElt(settingsSidebar, pluginObject, pluginId);
       }
     }
@@ -97,19 +77,20 @@ export default class MainPlugin extends Plugin {
   private createToggleBtn(plugin: Element, pluginObject: any, pluginId: string) {
     plugin.style.display = 'flex';
     plugin.style.justifyContent = 'space-between';
+    plugin.style.width = '105%';
     const isEnabled = this.isEnabled(pluginObject);
     console.log(pluginId)
     console.log(isEnabled)
 
     const containerBtn = plugin.createEl('div', {
-      // cls: 'checkbox-container',
       cls: 'checkbox-container' + (isEnabled ? ' is-enabled' : ''),
     });
+
+    containerBtn.style.marginLeft = '2px';
 
     const switchButton = containerBtn.createEl('input', {
       type: 'checkbox',
       cls: 'plugin-switch',
-      // cls: 'plugin-switch' + (isEnabled ? ' is-enabled' : ''),
     });
     switchButton.checked = isEnabled;
     switchButton.tabIndex = 0;
@@ -165,47 +146,5 @@ export default class MainPlugin extends Plugin {
 
     // Save the modified config file
     await fs.promises.writeFile(configPath, JSON.stringify(config, null, 2));
-  }
-}
-
-class PluginToggleSettingsTab extends PluginSettingTab {
-  plugin: Plugin;
-  settings: {
-    isFirstRun: true,
-    affectedPlugins: []
-  };
-
-  constructor(app: App, plugin: Plugin) {
-    super(app, plugin);
-    this.plugin = plugin;
-  }
-
-  display(): void {
-    let { containerEl } = this;
-
-    containerEl.empty();
-
-    containerEl.createEl("h2", { text: "Plugin Toggle Settings" });
-
-    for (const pluginsType of [/*this.app.internalPlugins.plugins,*/ this.app.plugins.manifests]) {
-      containerEl.createEl("h2", { text: "Sep Plugins" });
-      const pluginList: string[] = [];
-      for (const pluginId in pluginsType) {
-        pluginList.push(pluginId);
-        const pluginObject = pluginsType[pluginId];
-
-        if (this.plugin.manifest.id == pluginId) continue;
-        // Create a list item for each plugin
-        new Setting(containerEl)
-			.setName(pluginObject.name)
-			.addToggle((toggle) => {
-				const isEnabled = Array.from(this.app.plugins.enabledPlugins).includes(pluginObject.id);
-				toggle.setValue(isEnabled).onChange(async (value) => {
-          await this.plugin.pluginStateChange(value, pluginId);
-        });
-			});
-      }
-      console.log(pluginList);
-    }
   }
 }

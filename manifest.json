@@ -1,7 +1,7 @@
 {
 	"id": "quick-plugins-settings",
 	"name": "Quick Plugin Settings",
-	"version": "0.2.4",
+	"version": "0.2.5",
 	"minAppVersion": "0.15.0",
 	"description": "TODO",
 	"author": "Hugo COLLIN",
