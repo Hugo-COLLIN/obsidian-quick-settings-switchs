@@ -1,8 +1,9 @@
-# Obsidian Quick Plugins Settings
+# Obsidian Quick Settings Switchs for Plugins
 
-### 🔁 Toggle your plugins from the settings side menu.
+### 🔁 Enable/disable your plugins directly from the settings side menu.
 
-This Obsidian plugins enables you to quickly enable/disable your plugins from the settings menu.
+This extension adds toggle buttons for each plugin in the "Community plugins" section of the settings menu, 
+that enables you to quickly enable and disable your plugins.
 
 ![Demo](media/overview_800_c.gif)
 
