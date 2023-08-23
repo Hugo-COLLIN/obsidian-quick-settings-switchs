@@ -1,4 +1,4 @@
-import {App, Notice, Plugin, PluginSettingTab, Setting} from "obsidian";
+import {App, Plugin, PluginSettingTab, Setting} from "obsidian";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -61,30 +61,47 @@ export default class MainPlugin extends Plugin {
 
       const listPlugins = settingsSidebar.querySelectorAll(`.vertical-tab-nav-item`);
       // console.log(listPlugins)
+
+      let found = false;
       listPlugins.forEach((plugin) => {
         const toggle = plugin.querySelector(`.plugin-switch`);
-        if (plugin.textContent == pluginObject.name && toggle == null) {
-          console.log(plugin)
-          plugin.style.display = 'flex';
-          plugin.style.justifyContent = 'space-between';
-          const isEnabled = Array.from(this.app.plugins.enabledPlugins).includes(pluginObject.id);
-
-          const switchButton = plugin.createEl('input', {
-            type: 'checkbox',
-            cls: 'plugin-switch' + (isEnabled ? ' is-enabled' : ''),
-          });
-          switchButton.checked = isEnabled;
-          // switchButton.style.marginLeft = 'auto';
-
-          console.log(switchButton)
-
-          switchButton.addEventListener('change', async () => {
-            await this.pluginStateChange(switchButton.checked, pluginId);
-          });
+        if (toggle != null) return;
+        if (plugin.textContent == pluginObject.name) {
+          this.createToggleBtn(plugin, pluginObject, pluginId);
+          found = true;
         }
-        return;
       });
+
+      if (!found && this.isEnabled(pluginObject)) {
+        const sidelistInstalled = settingsSidebar.querySelectorAll('.vertical-tab-header-group-items')[2]
+        console.log(sidelistInstalled)
+        const plugin = sidelistInstalled.createEl('div', {
+          cls: 'vertical-tab-nav-item',
+          text: pluginObject.name,
+        });
+        this.createToggleBtn(plugin, pluginObject, pluginId);
+      }
     }
+  }
+
+  private createToggleBtn(plugin: Element, pluginObject: any, pluginId: string) {
+    plugin.style.display = 'flex';
+    plugin.style.justifyContent = 'space-between';
+    const isEnabled = this.isEnabled(pluginObject);
+
+    const switchButton = plugin.createEl('input', {
+      type: 'checkbox',
+      cls: 'plugin-switch' + (isEnabled ? ' is-enabled' : ''),
+    });
+    switchButton.checked = isEnabled;
+
+    switchButton.addEventListener('change', async () => {
+      await this.pluginStateChange(switchButton.checked, pluginId);
+    });
+  }
+
+  private isEnabled(pluginObject: any) {
+    return Array.from(this.app.plugins.enabledPlugins).includes(pluginObject.id);
   }
 
   private async pluginStateChange(value: boolean, pluginId: string) {
