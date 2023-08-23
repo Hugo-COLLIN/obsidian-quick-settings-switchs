@@ -4,6 +4,8 @@
 
 This Obsidian plugins enables you to quickly enable/disable your plugins from the settings menu.
 
+![Demo](media/overview.gif)
+
 ## How to contribute
 This project is under MIT license. If you want to help, the roadmap contains some ideas to improve the plugin. 
 You can contribute by reporting bugs, suggesting features, or by sending pull requests.
