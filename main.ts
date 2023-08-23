@@ -19,6 +19,9 @@ export default class MainPlugin extends Plugin {
       })
     );
 
+    const styleElem = document.head.appendChild(document.createElement("style"));
+    styleElem.innerHTML = ".plugin-switch { pointer-events: none; } .plugin-switch::before { pointer-events: all; }";
+
 
     // console.log(this.app.internalPlugins.plugins)
 		// console.log(this.app.plugins.plugins)
@@ -96,13 +99,21 @@ export default class MainPlugin extends Plugin {
     plugin.style.justifyContent = 'space-between';
     const isEnabled = this.isEnabled(pluginObject);
 
-    const switchButton = plugin.createEl('input', {
+    const containerBtn = plugin.createEl('div', {
+      // cls: 'checkbox-container',
+      cls: 'checkbox-container' + (isEnabled ? ' is-enabled' : ''),
+    });
+
+    const switchButton = containerBtn.createEl('input', {
       type: 'checkbox',
-      cls: 'plugin-switch' + (isEnabled ? ' is-enabled' : ''),
+      cls: 'plugin-switch',
+      // cls: 'plugin-switch' + (isEnabled ? ' is-enabled' : ''),
     });
     switchButton.checked = isEnabled;
+    switchButton.tabIndex = 0;
 
-    switchButton.addEventListener('change', async () => {
+    containerBtn.addEventListener('click', async () => {
+      switchButton.checked = !switchButton.checked; // needed, otherwise the action is not performed
       await this.pluginStateChange(switchButton.checked, pluginId);
     });
   }
