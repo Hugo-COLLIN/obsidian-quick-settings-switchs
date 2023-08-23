@@ -79,8 +79,6 @@ export default class MainPlugin extends Plugin {
     plugin.style.justifyContent = 'space-between';
     plugin.style.width = '105%';
     const isEnabled = this.isEnabled(pluginObject);
-    console.log(pluginId)
-    console.log(isEnabled)
 
     const containerBtn = plugin.createEl('div', {
       cls: 'checkbox-container' + (isEnabled ? ' is-enabled' : ''),
@@ -96,9 +94,7 @@ export default class MainPlugin extends Plugin {
     switchButton.tabIndex = 0;
 
     containerBtn.addEventListener('click', async () => {
-      console.log(switchButton.checked)
       switchButton.checked = !switchButton.checked; // needed, otherwise the action is not performed
-      console.log(switchButton.checked)
       await this.pluginStateChange(switchButton.checked, pluginId);
     });
   }
