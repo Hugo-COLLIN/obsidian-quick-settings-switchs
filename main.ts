@@ -65,18 +65,16 @@ export default class MainPlugin extends Plugin {
         const toggle = plugin.querySelector(`.plugin-switch`);
         if (plugin.textContent == pluginObject.name && toggle == null) {
           console.log(plugin)
+          plugin.style.display = 'flex';
+          plugin.style.justifyContent = 'space-between';
           const isEnabled = Array.from(this.app.plugins.enabledPlugins).includes(pluginObject.id);
-
-          console.log(Array.from(this.app.plugins.enabledPlugins))
-          console.log(pluginObject.id)
-          console.log(isEnabled)
 
           const switchButton = plugin.createEl('input', {
             type: 'checkbox',
             cls: 'plugin-switch' + (isEnabled ? ' is-enabled' : ''),
           });
-
           switchButton.checked = isEnabled;
+          // switchButton.style.marginLeft = 'auto';
 
           console.log(switchButton)
 
