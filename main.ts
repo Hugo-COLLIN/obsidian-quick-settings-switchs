@@ -65,23 +65,27 @@ export default class MainPlugin extends Plugin {
       let found = false;
       listPlugins.forEach((plugin) => {
         const toggle = plugin.querySelector(`.plugin-switch`);
-        if (toggle != null) return;
         if (plugin.textContent == pluginObject.name) {
-          this.createToggleBtn(plugin, pluginObject, pluginId);
           found = true;
+          if (toggle != null) return;
+          this.createToggleBtn(plugin, pluginObject, pluginId);
+          return;
         }
       });
 
-      if (!found && this.isEnabled(pluginObject)) {
-        const sidelistInstalled = settingsSidebar.querySelectorAll('.vertical-tab-header-group-items')[2]
-        console.log(sidelistInstalled)
-        const plugin = sidelistInstalled.createEl('div', {
-          cls: 'vertical-tab-nav-item',
-          text: pluginObject.name,
-        });
-        this.createToggleBtn(plugin, pluginObject, pluginId);
+      if (!found /*&& this.isEnabled(pluginObject)*/) {
+        this.createSideListElt(settingsSidebar, pluginObject, pluginId);
       }
     }
+  }
+
+  private createSideListElt(settingsSidebar: Element, pluginObject: any, pluginId: string) {
+    const sidelistInstalled = settingsSidebar.querySelectorAll('.vertical-tab-header-group-items')[2]
+    const pluginElt = sidelistInstalled.createEl('div', {
+      cls: 'vertical-tab-nav-item',
+      text: pluginObject.name,
+    });
+    this.createToggleBtn(pluginElt, pluginObject, pluginId);
   }
 
   private createToggleBtn(plugin: Element, pluginObject: any, pluginId: string) {
