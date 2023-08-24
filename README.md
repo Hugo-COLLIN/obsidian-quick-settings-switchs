@@ -17,6 +17,7 @@ For more information, please read the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 ## ROADMAP
 Bugs:
 - [ ] Bug "Community plugins" header disappear when no parameters for active plugins
+- [ ] List of non-settings plugins disappearing when using native settings toggles in "Installed modules"
 
 Main features:
 - [ ] Switch buttons for internal plugins in the side menu
