@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "quick-settings-switchs",
 	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"description": "Enable and disable your plugins quickly from the settings side menu.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
