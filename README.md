@@ -1,4 +1,4 @@
-# Obsidian Quick Settings Switchs for Plugins
+# Obsidian Quick Settings Switch for Plugins
 
 ### 🔁 Enable/disable your plugins directly from the settings side menu.
 
