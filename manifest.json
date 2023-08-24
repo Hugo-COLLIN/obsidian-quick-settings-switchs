@@ -1,7 +1,7 @@
 {
 	"id": "quick-settings-switchs",
 	"name": "Quick Settings Switchs for Plugins",
-	"version": "0.2.10",
+	"version": "0.2.12",
 	"minAppVersion": "0.15.0",
 	"description": "Enable and disable your plugins quickly from the settings side menu.",
 	"author": "Hugo COLLIN",
