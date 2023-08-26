@@ -1,7 +1,4 @@
 import {App, Plugin} from "obsidian";
-import * as fs from "fs";
-import * as path from "path";
-// import {PluginToggleSettingsTab} from "./settingsTab";
 
 export default class MainPlugin extends Plugin {
 	statusBarElement: HTMLSpanElement;
@@ -73,22 +70,20 @@ export default class MainPlugin extends Plugin {
 	}
 
 	private removeAllEltsInSideList(settingsSidebar: Element) {
-		settingsSidebar.querySelectorAll('.qps-created-element').forEach((elt) => elt.remove());
+		settingsSidebar.querySelectorAll('.qss-created-element').forEach((elt) => elt.remove());
 	}
 
 	private createSideListElt(settingsSidebar: Element, pluginObject: any, pluginId: string) {
 		const sidelistInstalled = settingsSidebar.querySelectorAll('.vertical-tab-header-group-items')[2]
 		const pluginElt = sidelistInstalled.createEl('div', {
-			cls: 'vertical-tab-nav-item qps-created-element',
+			cls: 'vertical-tab-nav-item qss-created-element',
 			text: pluginObject.name,
 		});
 		this.createToggleBtn(pluginElt, pluginObject, pluginId);
 	}
 
 	private createToggleBtn(plugin: Element, pluginObject: any, pluginId: string) {
-		plugin.style.display = 'flex';
-		plugin.style.justifyContent = 'space-between';
-		plugin.style.width = '105%';
+		plugin.classList.add('qss-plugin-list-element');
 		const isEnabled = this.isEnabled(pluginObject);
 
 		const containerBtn = plugin.createEl('div', {
@@ -115,43 +110,13 @@ export default class MainPlugin extends Plugin {
 	}
 
 	private async pluginStateChange(value: boolean, pluginId: string) {
+
 		if (value) {
-      // this.app.plugins.plugins[pluginId].load();
-      this.app.plugins.enablePlugin(pluginId);
-      this.app.plugins.enabledPlugins.add(pluginId);
+      this.app.plugins.enablePluginAndSave(pluginId);
 			await new Promise((resolve) => setTimeout(resolve, 100)); //TODO: retry while not added
-		} else {
-      // this.app.plugins.plugins[pluginId].unload();
-      this.app.plugins.disablePlugin(pluginId);
-      this.app.plugins.enabledPlugins.delete(pluginId);
 		}
+		else this.app.plugins.disablePluginAndSave(pluginId);
+
 		this.updateLeftSidebar();
-		await this.savePluginState(this.app, pluginId, value);
-	}
-
-
-	async savePluginState(app: App, pluginId: string, enabled: boolean) {
-		// Get the vault path
-		const vaultPath = app.vault.adapter.getBasePath();
-		const configDirName = app.vault.configDir;
-
-		// Read the config file
-		const configPath = path.join(vaultPath, configDirName, 'community-plugins.json');
-		const configFile = await fs.promises.readFile(configPath, 'utf-8');
-		const config = JSON.parse(configFile);
-
-		// Update the list of enabled plugins
-		if (enabled) {
-			if (!config.includes(pluginId)) {
-				config.push(pluginId);
-			}
-		} else {
-			if (config.includes(pluginId)) {
-				config.splice(config.indexOf(pluginId), 1);
-			}
-		}
-
-		// Save the modified config file
-		await fs.promises.writeFile(configPath, JSON.stringify(config, null, 2));
 	}
 }
